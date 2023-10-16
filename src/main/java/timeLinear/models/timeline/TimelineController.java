@@ -3,8 +3,6 @@ package timeLinear.models.timeline;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import timeLinear.models.timeEvent.TimeEvent;
 import timeLinear.models.timeEvent.TimeEventRepository;
@@ -81,7 +79,7 @@ public class TimelineController {
     }
 
     @PostMapping("/events")
-    public ResponseEntity<String> addEventToTimeline(@RequestBody TimelineTimelineEventBean data) {
+    public ResponseEntity<String> addEventToTimeline(@RequestBody TimelineTimeEventBean data) {
         try {
 
             Optional<Timeline> timelineOptional = timelineRepository.findById(data.getTimelineId());
@@ -99,7 +97,7 @@ public class TimelineController {
     }
 
     @DeleteMapping("/events")
-    public ResponseEntity<String> deleteEventFromTimeline(@RequestBody TimelineTimelineEventBean data) {
+    public ResponseEntity<String> deleteEventFromTimeline(@RequestBody TimelineTimeEventBean data) {
         try {
             Optional<Timeline> timelineOptional = timelineRepository.findById(data.getTimelineId());
             if (timelineOptional.isPresent()) {
