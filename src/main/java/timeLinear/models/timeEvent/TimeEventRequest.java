@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimeEventBean {
+public class TimeEventRequest {
     private String name;
     private String description;
     private String startDate;

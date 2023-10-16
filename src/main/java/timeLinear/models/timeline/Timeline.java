@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import timeLinear.models.timeEvent.TimeEvent;
+import timeLinear.models.user.User;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
-@Table(name = "TIMEVENT")
+@Table(name = "TIMELINE")
 @NoArgsConstructor
 public class Timeline {
     @Id
@@ -26,10 +27,19 @@ public class Timeline {
     @Column(name = "CREATIONDATE")
     private String creationDate;
 
-    @OneToMany(mappedBy = "timeline", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany
+    @JoinTable(
+            name = "TIMELINE_TIMEEVENT",
+            joinColumns = @JoinColumn(name = "timeline_id"),
+            inverseJoinColumns = @JoinColumn(name = "timeevent_id")
+    )
     private List<TimeEvent> timeEvents = new ArrayList<>();
 
-    public Timeline (TimelineBean timelineBean) {
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Timeline (TimelineRequest timelineBean) {
         this.name = timelineBean.getName();
         this.description = timelineBean.getDescription();
         this.creationDate = timelineBean.getCreationDate();

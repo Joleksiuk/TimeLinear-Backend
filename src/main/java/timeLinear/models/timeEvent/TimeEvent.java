@@ -3,6 +3,11 @@ package timeLinear.models.timeEvent;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import timeLinear.models.timeline.Timeline;
+import timeLinear.models.user.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -26,7 +31,19 @@ public class TimeEvent {
     @Column(name = "ENDDATE")
     private String endDate;
 
-    public TimeEvent (TimeEventBean timeEventBean) {
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToMany
+    @JoinTable(
+            name = "TIMELINE_TIMEEVENT",
+            joinColumns = @JoinColumn(name = "timeevent_id"),
+            inverseJoinColumns = @JoinColumn(name = "timeline_id")
+    )
+    private List<Timeline> timelines = new ArrayList<>();
+
+    public TimeEvent (TimeEventRequest timeEventBean) {
         this.name = timeEventBean.getName();
         this.description = timeEventBean.getDescription();
         this.startDate = timeEventBean.getStartDate();

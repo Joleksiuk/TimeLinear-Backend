@@ -3,10 +3,9 @@ package timeLinear.models.timeEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/timeEvent")
@@ -16,14 +15,42 @@ public class TimeEventController {
     @Autowired
     private TimeEventRepository timeEventRepository;
 
+    @Autowired TimeEventService timeEventService;
+
     @PostMapping
-    public ResponseEntity<String> createTimeEvent(@RequestBody TimeEventBean timeEventBean) {
+    public ResponseEntity<TimeEventResponse> createTimeEvent(@RequestBody TimeEventRequest data) {
         try{
-            timeEventRepository.save(new TimeEvent(timeEventBean));
+            TimeEvent timeEvent = timeEventRepository.save(new TimeEvent(data));
+            timeEventService.assignUserToTimeEvent(timeEvent);
+            return ResponseEntity.ok().body(new TimeEventResponse(timeEvent));
         }
         catch(Exception e) {
-            return ResponseEntity.badRequest().body("Failed to create TimeEvent: " + e.getMessage());
+            return ResponseEntity.badRequest().body(null);
         }
-        return ResponseEntity.ok().body("Time Event created!");
+    }
+
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<String> deleteTimeEvent(@PathVariable Long eventId) {
+        try{
+            Optional<TimeEvent> timeEvent = timeEventRepository.findById(eventId);
+            timeEvent.ifPresent(event -> timeEventRepository.delete(event));
+            return ResponseEntity.ok().body("Time Event deleted!");
+        }
+        catch(Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{eventId}")
+    public ResponseEntity<String> updateTimeEvent(@PathVariable Long eventId, @RequestBody TimeEventRequest timeEventBean) {
+        Optional<TimeEvent> timeEvent = timeEventRepository.findById(eventId);
+        if (timeEvent.isPresent()) {
+            TimeEvent updatedTimeEvent = new TimeEvent(timeEventBean);
+            updatedTimeEvent.setId(eventId);
+            timeEvent.ifPresent(event -> timeEventRepository.save(updatedTimeEvent));
+            return ResponseEntity.ok().body("Time Event updated!");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

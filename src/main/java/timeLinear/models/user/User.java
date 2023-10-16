@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import timeLinear.models.auth.Role;
+import timeLinear.models.timeEvent.TimeEvent;
+import timeLinear.models.timeline.Timeline;
 import timeLinear.models.token.Token;
 
 @Data
@@ -39,6 +41,12 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
+
+    @OneToMany(mappedBy = "user")
+    private List<TimeEvent> timeEvents;
+
+    @OneToMany(mappedBy = "user")
+    private List<Timeline> timelines;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -3,6 +3,8 @@ package timeLinear.models.timeline;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import timeLinear.models.timeEvent.TimeEvent;
 import timeLinear.models.timeEvent.TimeEventRepository;
@@ -21,19 +23,21 @@ public class TimelineController {
     @Autowired
     private TimeEventRepository timeEventRepository;
 
+    @Autowired TimelineService timelineService;
+
     @PostMapping
-    public ResponseEntity<String> createTimeline(@RequestBody TimelineBean timelineBean) {
+    public ResponseEntity<TimelineResponse> createTimeline(@RequestBody TimelineRequest timelineBean) {
         try{
-            timelineRepository.save(new Timeline(timelineBean));
+            Timeline timeline = timelineRepository.save(new Timeline(timelineBean));
+            return ResponseEntity.ok().body(new TimelineResponse(timeline));
         }
         catch(Exception e) {
-            return ResponseEntity.badRequest().body("Failed to create Timeline: " + e.getMessage());
+            return ResponseEntity.badRequest().body(null);
         }
-        return ResponseEntity.ok().body("Timeline created!");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateTimeline(@PathVariable Long id, @RequestBody TimelineBean timelineBean) {
+    public ResponseEntity<String> updateTimeline(@PathVariable Long id, @RequestBody TimelineRequest timelineBean) {
         try {
             Optional<Timeline> timelineOptional = timelineRepository.findById(id);
             if (timelineOptional.isPresent()) {
@@ -50,13 +54,10 @@ public class TimelineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Timeline> getTimeline(@PathVariable Long id) {
-        try {
-            Optional<Timeline> timelineOptional = timelineRepository.findById(id);
-            return ResponseEntity.ok().body(timelineOptional.get());
-        } catch (Exception e) {
-            return null;
-        }
+    public ResponseEntity<TimelineResponse> getTimeline(@PathVariable Long id) {
+        Optional<Timeline> timelineOptional = timelineRepository.findById(id);
+        return timelineOptional.map(timeline -> ResponseEntity.ok().body(new TimelineResponse(timeline)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/bulk")
@@ -112,5 +113,16 @@ public class TimelineController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to remove Event from Timeline!" + e.getMessage());
         }
+    }
+
+    @GetMapping("/events/{timelineId}")
+    public ResponseEntity<List<TimeEvent>> getEventsOfTimeline(@PathVariable Long timelineId) {
+
+        Optional<Timeline> timelineOptional = timelineRepository.findById(timelineId);
+        if(timelineOptional.isPresent()){
+            timelineService.assignUserToTimeline(timelineOptional.get());
+            return ResponseEntity.ok().body(timelineOptional.get().getTimeEvents());
+        }
+        return ResponseEntity.notFound().build();
     }
 }
