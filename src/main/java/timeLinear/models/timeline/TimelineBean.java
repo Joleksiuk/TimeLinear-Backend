@@ -1,4 +1,4 @@
-package timeLinear.models.timeEvent;
+package timeLinear.models.timeline;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,8 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimeEventBean {
+public class TimelineBean {
     private String name;
     private String description;
-    private String startDate;
-    private String endDate;
+    private String creationDate;
 }

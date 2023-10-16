@@ -11,13 +11,25 @@ import lombok.NoArgsConstructor;
 public class TimeEvent {
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Use GenerationType.IDENTITY for auto-generated IDs
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "NAME")
     private String name;
 
+    @Column(name = "DESCRIPTION")
+    private String description;
+
+    @Column(name = "STARTDATE")
+    private String startDate;
+
+    @Column(name = "ENDDATE")
+    private String endDate;
+
     public TimeEvent (TimeEventBean timeEventBean) {
         this.name = timeEventBean.getName();
+        this.description = timeEventBean.getDescription();
+        this.startDate = timeEventBean.getStartDate();
+        this.endDate = timeEventBean.getEndDate();
     }
 }
