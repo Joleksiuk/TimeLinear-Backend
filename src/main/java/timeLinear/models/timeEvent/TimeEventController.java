@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/timeEvent")
+@RequestMapping("/api/v1/timeEvents")
 @RequiredArgsConstructor
 public class TimeEventController {
 
