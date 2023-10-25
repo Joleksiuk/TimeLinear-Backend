@@ -1,12 +1,8 @@
 package timeLinear.models.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -19,6 +15,7 @@ import timeLinear.models.auth.Role;
 import timeLinear.models.timeEvent.TimeEvent;
 import timeLinear.models.timeline.Timeline;
 import timeLinear.models.token.Token;
+import timeLinear.models.userGroup.Group;
 
 @Data
 @Builder
@@ -46,6 +43,14 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<Timeline> timelines;
+
+    @ManyToMany
+    @JoinTable(
+            name = "USER_GROUP",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id")
+    )
+    private List<Group> groups = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

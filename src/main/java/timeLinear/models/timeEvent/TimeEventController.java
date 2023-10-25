@@ -47,7 +47,7 @@ public class TimeEventController {
         if (timeEvent.isPresent()) {
             TimeEvent updatedTimeEvent = new TimeEvent(timeEventBean);
             updatedTimeEvent.setId(eventId);
-            timeEvent.ifPresent(event -> timeEventRepository.save(updatedTimeEvent));
+            timeEventRepository.save(updatedTimeEvent);
             return ResponseEntity.ok().body("Time Event updated!");
         } else {
             return ResponseEntity.notFound().build();

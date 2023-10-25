@@ -3,6 +3,8 @@ package timeLinear.models.timeEvent;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import timeLinear.models.timeline.Timeline;
 import timeLinear.models.user.User;
 
@@ -11,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "TIMEVENT")
+@Table(name = "TIME_EVENT")
 @NoArgsConstructor
 public class TimeEvent {
     @Id
@@ -31,10 +33,6 @@ public class TimeEvent {
     @Column(name = "ENDDATE")
     private String endDate;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @ManyToMany
     @JoinTable(
             name = "TIMELINE_TIMEEVENT",
@@ -43,10 +41,15 @@ public class TimeEvent {
     )
     private List<Timeline> timelines = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User owner;
+
     public TimeEvent (TimeEventRequest timeEventBean) {
         this.name = timeEventBean.getName();
         this.description = timeEventBean.getDescription();
         this.startDate = timeEventBean.getStartDate();
         this.endDate = timeEventBean.getEndDate();
+        this.owner = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

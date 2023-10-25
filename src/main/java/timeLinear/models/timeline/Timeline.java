@@ -3,8 +3,11 @@ package timeLinear.models.timeline;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import timeLinear.models.timeEvent.TimeEvent;
 import timeLinear.models.user.User;
+import timeLinear.models.userGroup.Group;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,10 +42,23 @@ public class Timeline {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group editGroup;
+
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group browseGroup;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User owner;
+
     public Timeline (TimelineRequest timelineBean) {
         this.name = timelineBean.getName();
         this.description = timelineBean.getDescription();
         this.creationDate = timelineBean.getCreationDate();
+        this.owner = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     public void addEvent(TimeEvent timeEvent){
