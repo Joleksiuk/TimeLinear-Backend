@@ -33,14 +33,6 @@ public class TimeEvent {
     @Column(name = "ENDDATE")
     private String endDate;
 
-    @ManyToMany
-    @JoinTable(
-            name = "TIMELINE_TIMEEVENT",
-            joinColumns = @JoinColumn(name = "timeevent_id"),
-            inverseJoinColumns = @JoinColumn(name = "timeline_id")
-    )
-    private List<Timeline> timelines = new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User owner;

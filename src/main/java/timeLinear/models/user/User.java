@@ -35,23 +35,6 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
-
-    @OneToMany(mappedBy = "user")
-    private List<TimeEvent> timeEvents;
-
-    @OneToMany(mappedBy = "user")
-    private List<Timeline> timelines;
-
-    @ManyToMany
-    @JoinTable(
-            name = "USER_GROUP",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id")
-    )
-    private List<Group> groups = new ArrayList<>();
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();

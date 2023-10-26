@@ -11,6 +11,6 @@ public class TimeEventService {
     public void assignUserToTimeEvent(TimeEvent timeEvent) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
-        timeEvent.setUser(currentUser);
+        timeEvent.setOwner(currentUser);
     }
 }

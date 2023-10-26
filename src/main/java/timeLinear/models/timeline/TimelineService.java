@@ -11,6 +11,6 @@ public class TimelineService {
     public void assignUserToTimeline(Timeline timeline) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
-        timeline.setUser(currentUser);
+        timeline.setOwner(currentUser);
     }
 }
