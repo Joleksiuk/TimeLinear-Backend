@@ -5,11 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/timeEvents")
 @RequiredArgsConstructor
+@CrossOrigin
 public class TimeEventController {
 
     @Autowired
@@ -52,5 +54,18 @@ public class TimeEventController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/events/bulk")
+    public ResponseEntity<List<TimeEvent>> getEventsInBulk(@RequestBody TimeEventsBulkRequest data) {
+        List<TimeEvent> timeEvents = timeEventRepository.findAllById(data.getTimeEventsIds());
+        return ResponseEntity.ok().body(timeEvents);
+    }
+
+    @GetMapping("/{eventId}")
+    public ResponseEntity<TimeEvent> getEvent(@PathVariable Long eventId) {
+        Optional<TimeEvent> timeEventOptional = timeEventRepository.findById(eventId);
+        return timeEventOptional.map(timeEvent -> ResponseEntity.ok().body(timeEvent))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

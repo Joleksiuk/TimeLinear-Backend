@@ -40,18 +40,6 @@ public class Timeline {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "group_id")
-    private Group editGroup;
-
-    @ManyToOne
-    @JoinColumn(name = "group_id")
-    private Group browseGroup;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
     private User owner;
 
     public Timeline (TimelineRequest timelineBean) {
