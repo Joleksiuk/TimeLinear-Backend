@@ -34,7 +34,7 @@ import static timeLinear.models.auth.Role.*;
 public class SecurityConfiguration {
 
     private static final String[] WHITE_LIST_URL = {
-            "/localhost:3000/**",
+            "/**",
             "/api/v1/auth/**",
             "/v2/api-docs",
             "/v3/api-docs",

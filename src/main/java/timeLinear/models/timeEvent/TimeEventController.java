@@ -3,7 +3,9 @@ package timeLinear.models.timeEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import timeLinear.models.user.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,13 +13,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/timeEvents")
 @RequiredArgsConstructor
-@CrossOrigin
 public class TimeEventController {
 
     @Autowired
     private TimeEventRepository timeEventRepository;
 
-    @Autowired TimeEventService timeEventService;
+    @Autowired
+    private TimeEventService timeEventService;
 
     @PostMapping
     public ResponseEntity<TimeEventResponse> createTimeEvent(@RequestBody TimeEventRequest data) {
@@ -56,16 +58,29 @@ public class TimeEventController {
         }
     }
 
-    @GetMapping("/events/bulk")
-    public ResponseEntity<List<TimeEvent>> getEventsInBulk(@RequestBody TimeEventsBulkRequest data) {
+    @GetMapping("/bulk")
+    public ResponseEntity<TimeEventsBulkResponse> getEventsInBulk(@RequestBody TimeEventsBulkRequest data) {
         List<TimeEvent> timeEvents = timeEventRepository.findAllById(data.getTimeEventsIds());
-        return ResponseEntity.ok().body(timeEvents);
+        List<TimeEventResponse> timeEventsResponse = timeEvents.stream().map(TimeEventResponse::new).toList();
+        return ResponseEntity.ok().body(new TimeEventsBulkResponse(timeEventsResponse));
     }
 
     @GetMapping("/{eventId}")
-    public ResponseEntity<TimeEvent> getEvent(@PathVariable Long eventId) {
+    public ResponseEntity<TimeEventResponse> getEvent(@PathVariable Long eventId) {
         Optional<TimeEvent> timeEventOptional = timeEventRepository.findById(eventId);
-        return timeEventOptional.map(timeEvent -> ResponseEntity.ok().body(timeEvent))
+        return timeEventOptional.map(timeEvent -> ResponseEntity.ok().body(new TimeEventResponse(timeEvent)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/owned")
+    public ResponseEntity<TimeEventsBulkResponse> getOwnedEvents() {
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(user !=null ){
+            List<TimeEvent> timeEvents = timeEventRepository.findAllByOwner(user);
+            List<TimeEventResponse> timeEventsResponse = timeEvents.stream().map(TimeEventResponse::new).toList();
+            return ResponseEntity.ok().body(new TimeEventsBulkResponse(timeEventsResponse));
+        }
+        return ResponseEntity.notFound().build();
     }
 }
