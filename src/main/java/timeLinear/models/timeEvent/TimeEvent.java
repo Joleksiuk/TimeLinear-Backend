@@ -7,13 +7,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import timeLinear.models.timeline.Timeline;
 import timeLinear.models.user.User;
+import timeLinear.models.userGroup.Group;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
-@Table(name = "TIME_EVENT")
+@Table(name = "_TIME_EVENT")
 @NoArgsConstructor
 public class TimeEvent {
     @Id
@@ -36,6 +37,10 @@ public class TimeEvent {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User owner;
+
+    @OneToOne
+    @JoinColumn(name = "group_id")
+    private Group allowedToBrowse;
 
     public TimeEvent (TimeEventRequest timeEventBean) {
         this.name = timeEventBean.getName();

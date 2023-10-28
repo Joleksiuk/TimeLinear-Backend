@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "TIMELINE")
+@Table(name = "_TIMELINE")
 @NoArgsConstructor
 public class Timeline {
     @Id
@@ -30,9 +30,9 @@ public class Timeline {
     @Column(name = "CREATIONDATE")
     private String creationDate;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "TIMELINE_TIMEEVENT",
+            name = "_TIMELINE_TIMEEVENT",
             joinColumns = @JoinColumn(name = "timeline_id"),
             inverseJoinColumns = @JoinColumn(name = "timeevent_id")
     )
@@ -41,6 +41,10 @@ public class Timeline {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User owner;
+
+    @OneToOne
+    @JoinColumn(name = "group_id")
+    private Group allowedToBrowse;
 
     public Timeline (TimelineRequest timelineBean) {
         this.name = timelineBean.getName();
