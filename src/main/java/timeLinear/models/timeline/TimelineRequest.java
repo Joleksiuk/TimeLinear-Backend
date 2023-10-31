@@ -9,5 +9,4 @@ import lombok.*;
 public class TimelineRequest {
     private String name;
     private String description;
-    private String creationDate;
 }

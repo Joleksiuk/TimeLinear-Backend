@@ -3,9 +3,11 @@ package timeLinear.models.timeline;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import timeLinear.models.timeEvent.TimeEvent;
 import timeLinear.models.timeEvent.TimeEventRepository;
+import timeLinear.models.user.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -59,8 +61,22 @@ public class TimelineController {
     }
 
     @GetMapping("/bulk")
-    public ResponseEntity<List<Timeline>> getTimelinesInBulk(@RequestBody TimelinesBulkBean data) {
-        return ResponseEntity.ok().body(timelineRepository.findAllById(data.getTimelineIds()));
+    public ResponseEntity<TimelinesBulkResponse> getTimelinesInBulk(@RequestBody TimelinesBulkRequest data) {
+        List<Timeline> timelines = timelineRepository.findAllById(data.getTimelineIds());
+        List<TimelineResponse> timelineResponses = timelines.stream().map(TimelineResponse::new).toList();
+        return ResponseEntity.ok().body(new TimelinesBulkResponse(timelineResponses));
+    }
+
+    @GetMapping("/owned")
+    public ResponseEntity<TimelinesBulkResponse> getOwnedEvents() {
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(user !=null ){
+            List<Timeline> timelines = timelineRepository.findAllByOwner(user);
+            List<TimelineResponse> timelineResponses = timelines.stream().map(TimelineResponse::new).toList();
+            return ResponseEntity.ok().body(new TimelinesBulkResponse(timelineResponses));
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
@@ -112,16 +128,4 @@ public class TimelineController {
             return ResponseEntity.badRequest().body("Failed to remove Event from Timeline!" + e.getMessage());
         }
     }
-
-    @GetMapping("/events/{timelineId}")
-    public ResponseEntity<List<TimeEvent>> getEventsOfTimeline(@PathVariable Long timelineId) {
-
-        Optional<Timeline> timelineOptional = timelineRepository.findById(timelineId);
-        if(timelineOptional.isPresent()){
-            timelineService.assignUserToTimeline(timelineOptional.get());
-            return ResponseEntity.ok().body(timelineOptional.get().getTimeEvents());
-        }
-        return ResponseEntity.notFound().build();
-    }
-
 }

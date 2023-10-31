@@ -7,7 +7,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import timeLinear.models.timeEvent.TimeEvent;
 import timeLinear.models.user.User;
 import timeLinear.models.userGroup.Group;
+import timeLinear.utils.DateUtils;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +52,7 @@ public class Timeline {
     public Timeline (TimelineRequest timelineBean) {
         this.name = timelineBean.getName();
         this.description = timelineBean.getDescription();
-        this.creationDate = timelineBean.getCreationDate();
+        this.creationDate = DateUtils.getCurrentStringDate();
         this.owner = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
