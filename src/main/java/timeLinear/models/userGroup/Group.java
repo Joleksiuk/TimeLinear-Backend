@@ -12,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "_group")
+@Table(name = "_GROUP")
 @NoArgsConstructor
 public class Group {
     @Id
@@ -28,14 +28,14 @@ public class Group {
 
     @ManyToMany
     @JoinTable(
-            name = "USER_GROUP",
-            joinColumns = @JoinColumn(name = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            name = "_USER_GROUP",
+            joinColumns = @JoinColumn(name = "GROUP_ID"),
+            inverseJoinColumns = @JoinColumn(name = "USER_ID")
     )
     private List<User> users = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "USER_ID")
     private User owner;
 
     public Group (GroupRequest groupRequest) {

@@ -11,6 +11,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TimelinesBulkBean {
+public class TimelinesBulkRequest {
     private List<Long> timelineIds;
 }
