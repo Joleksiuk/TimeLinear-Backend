@@ -1,16 +1,12 @@
 package timeLinear.models.timeEvent;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import timeLinear.models.timeline.Timeline;
 import timeLinear.models.user.User;
 import timeLinear.models.userGroup.Group;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
@@ -34,6 +30,14 @@ public class TimeEvent {
     @Column(name = "ENDDATE")
     private String endDate;
 
+    @Column(name = "ICON_TYPE")
+    @Nullable
+    private String iconType;
+
+    @Column(name = "ICON_SOURCE")
+    @Nullable
+    private String iconSource;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User owner;
@@ -47,6 +51,8 @@ public class TimeEvent {
         this.description = timeEventBean.getDescription();
         this.startDate = timeEventBean.getStartDate();
         this.endDate = timeEventBean.getEndDate();
+        this.iconType = timeEventBean.getIconType();
+        this.iconSource = timeEventBean.getIconSource();
         this.owner = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

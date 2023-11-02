@@ -1,10 +1,9 @@
 package timeLinear.models.user;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,10 +11,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import timeLinear.models.auth.Role;
-import timeLinear.models.timeEvent.TimeEvent;
-import timeLinear.models.timeline.Timeline;
-import timeLinear.models.token.Token;
-import timeLinear.models.userGroup.Group;
 
 @Data
 @Builder
@@ -31,6 +26,14 @@ public class User implements UserDetails {
     private String username;
     private String email;
     private String password;
+
+    @Column(name = "avatar_seed")
+    @Nullable
+    private String avatarSeed;
+
+    @Column(name = "avatar_type")
+    @Nullable
+    private String avatarType;
 
     @Enumerated(EnumType.STRING)
     private Role role;

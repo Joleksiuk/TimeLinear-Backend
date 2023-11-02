@@ -61,31 +61,33 @@ public class GroupController {
         }
     }
 
-    @PutMapping("/addUser")
-    public ResponseEntity<String> addUserToGroup(@RequestBody UserGroupRequest userGroupRequest) {
+    @PutMapping("/addUsers")
+    public ResponseEntity<String> addUserToGroup(@RequestBody GroupUsersActionRequest userGroupRequest) {
         Optional<Group> groupOptional = groupRepository.findById(userGroupRequest.getGroupId());
-        Optional<User> userOptional = userRepository.findById(userGroupRequest.getUserId().intValue());
+        List<User> users = userRepository.findAllById(
+                userGroupRequest.getUsersIds().stream().map(Long::intValue).collect(Collectors.toList()));
 
-        if (groupOptional.isPresent() && userOptional.isPresent()) {
+        if (groupOptional.isPresent()) {
             Group updatedGroup = groupOptional.get();
-            updatedGroup.getUsers().add(userOptional.get());
+            users.forEach(user -> {
+                updatedGroup.getUsers().add(user);
+            });
             groupRepository.save(updatedGroup);
-            return ResponseEntity.ok().body("User added to group!");
+            return ResponseEntity.ok().body("Users added to group!");
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PutMapping("/removeUser")
-    public ResponseEntity<String> removeUserFromGroup(@RequestBody UserGroupRequest userGroupRequest) {
+    @PutMapping("/removeUsers")
+    public ResponseEntity<String> removeUserFromGroup(@RequestBody GroupUsersActionRequest userGroupRequest) {
         Optional<Group> groupOptional = groupRepository.findById(userGroupRequest.getGroupId());
-        Optional<User> userOptional = userRepository.findById(userGroupRequest.getUserId().intValue());
 
-        if (groupOptional.isPresent() && userOptional.isPresent()) {
+        if (groupOptional.isPresent()) {
             Group updatedGroup = groupOptional.get();
-            updatedGroup.getUsers().remove(userOptional.get());
+            updatedGroup.getUsers().removeIf(user -> userGroupRequest.getUsersIds().contains(user.getId().longValue()));
             groupRepository.save(updatedGroup);
-            return ResponseEntity.ok().body("User removed from group!");
+            return ResponseEntity.ok().body("Users removed from group!");
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -99,15 +101,19 @@ public class GroupController {
     }
 
     @GetMapping("/bulk")
-    public ResponseEntity<List<GroupResponse>> getGroupsInBulk(@RequestBody GroupBulkRequest groupBulkRequest) {
+    public ResponseEntity<GroupBulkResponse> getGroupsInBulk(@RequestBody GroupBulkRequest groupBulkRequest) {
         List<Group> groups = groupRepository.findAllById(groupBulkRequest.getGroupIds());
-        return  ResponseEntity.ok().body(groups.stream().map(GroupResponse::new).collect(Collectors.toList()));
+        return ResponseEntity.ok().body(
+                new GroupBulkResponse(
+                        groups.stream().map(GroupResponse::new).collect(Collectors.toList())));
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<List<GroupResponse>> getGroupsOfUser() {
+    @GetMapping("/owned")
+    public ResponseEntity<GroupBulkResponse> getGroupsOfUser() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<Group> groups = groupRepository.findAllByOwner(user);
-        return ResponseEntity.ok().body(groups.stream().map(GroupResponse::new).collect(Collectors.toList()));
+        return ResponseEntity.ok().body(
+                new GroupBulkResponse(
+                    groups.stream().map(GroupResponse::new).collect(Collectors.toList())));
     }
 }

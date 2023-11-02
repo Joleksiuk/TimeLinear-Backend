@@ -18,4 +18,10 @@ public class AuthenticationResponse {
     private String refreshToken;
     @JsonProperty("email")
     private String email;
+    @JsonProperty("username")
+    private String username;
+    @JsonProperty("avatar_type")
+    private String avatarType;
+    @JsonProperty("avatar_seed")
+    private String avatarSeed;
 }

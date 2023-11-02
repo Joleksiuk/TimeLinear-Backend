@@ -15,6 +15,8 @@ public class TimeEventResponse {
     private String description;
     private String startDate;
     private String endDate;
+    private String iconType = null;
+    private String iconSource = null;
 
     public TimeEventResponse (TimeEvent timeEvent){
         this.id = timeEvent.getId();
@@ -22,5 +24,7 @@ public class TimeEventResponse {
         this.description = timeEvent.getDescription();
         this.startDate = timeEvent.getStartDate();
         this.endDate = timeEvent.getEndDate();
+        this.iconSource = timeEvent.getIconSource();
+        this.iconType = timeEvent.getIconType();
     }
 }

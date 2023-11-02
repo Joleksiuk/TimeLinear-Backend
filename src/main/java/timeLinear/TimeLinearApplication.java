@@ -10,8 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import timeLinear.auth.AuthenticationService;
 import timeLinear.auth.RegisterRequest;
 
-import static timeLinear.models.auth.Role.ADMIN;
-import static timeLinear.models.auth.Role.MANAGER;
+import static timeLinear.models.auth.Role.*;
 
 @SpringBootApplication
 public class TimeLinearApplication {
@@ -33,28 +32,50 @@ public class TimeLinearApplication {
             }
         };
     }
-    @Bean
-    public CommandLineRunner commandLineRunner(
-            AuthenticationService service
-    ) {
-        return args -> {
-            var admin = RegisterRequest.builder()
-                    .username("Admin")
-                    .email("admin@mail.com")
-                    .password("password")
-                    .role(ADMIN)
-                    .build();
-            System.out.println("Admin token: " + service.register(admin).getAccessToken());
-
-            var manager = RegisterRequest.builder()
-                    .username("Admin")
-                    .email("manager@mail.com")
-                    .password("password")
-                    .role(MANAGER)
-                    .build();
-            System.out.println("Manager token: " + service.register(manager).getAccessToken());
-
-        };
-    }
+//    @Bean
+//    public CommandLineRunner commandLineRunner(
+//            AuthenticationService service
+//    ) {
+//        return args -> {
+//            var admin = RegisterRequest.builder()
+//                    .username("Admin")
+//                    .email("admin@mail.com")
+//                    .password("password")
+//                    .role(ADMIN)
+//                    .build();
+//            System.out.println("Admin token: " + service.register(admin).getAccessToken());
+//
+//            var manager = RegisterRequest.builder()
+//                    .username("Admin")
+//                    .email("manager@mail.com")
+//                    .password("password")
+//                    .role(MANAGER)
+//                    .build();
+//            System.out.println("Manager token: " + service.register(manager).getAccessToken());
+//
+//            var user1 = RegisterRequest.builder()
+//                    .username("user1")
+//                    .email("user1@mail.com")
+//                    .password("user1")
+//                    .role(USER)
+//                    .build();
+//            System.out.println("USER1 token: " + service.register(user1).getAccessToken());
+//            var user2 = RegisterRequest.builder()
+//                    .username("user2")
+//                    .email("user2@mail.com")
+//                    .password("user2")
+//                    .role(USER)
+//                    .build();
+//            System.out.println("USER2 token: " + service.register(user1).getAccessToken());
+//            var user3 = RegisterRequest.builder()
+//                    .username("user3")
+//                    .email("user3@mail.com")
+//                    .password("user3")
+//                    .role(USER)
+//                    .build();
+//            System.out.println("USER3 token: " + service.register(user1).getAccessToken());
+//
+//        };
+//    }
 
 }

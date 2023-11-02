@@ -32,6 +32,8 @@ public class AuthenticationService {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .avatarSeed(request.getEmail())
+                .avatarType("initials")
                 .role(request.getRole())
                 .build();
         var savedUser = repository.save(user);
@@ -62,6 +64,9 @@ public class AuthenticationService {
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .email(request.getEmail())
+                .username(user.getUsername())
+                .avatarSeed(user.getAvatarSeed())
+                .avatarType(user.getAvatarType())
                 .build();
     }
 

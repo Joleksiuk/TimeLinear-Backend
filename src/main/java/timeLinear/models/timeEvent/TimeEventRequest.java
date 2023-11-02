@@ -14,4 +14,6 @@ public class TimeEventRequest {
     private String description;
     private String startDate;
     private String endDate;
+    private String iconType = null;
+    private String iconSource = null;
 }
