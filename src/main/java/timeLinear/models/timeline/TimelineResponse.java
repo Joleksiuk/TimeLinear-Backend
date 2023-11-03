@@ -2,6 +2,7 @@ package timeLinear.models.timeline;
 
 import lombok.*;
 import timeLinear.models.timeEvent.TimeEventResponse;
+import timeLinear.models.userGroup.Group;
 
 import java.util.List;
 
@@ -16,11 +17,17 @@ public class TimelineResponse {
     private String creationDate;
     private List<TimeEventResponse> timeEvents;
 
+    private Group allowedToBrowse;
+
+    private String ownerEmail;
+
     public TimelineResponse (Timeline timeline){
         this.id = timeline.getId();
         this.name = timeline.getName();
         this.description = timeline.getDescription();
         this.creationDate = timeline.getCreationDate();
         this.timeEvents = timeline.getTimeEvents().stream().map(TimeEventResponse::new).toList();
+        this.allowedToBrowse = timeline.getAllowedToBrowse();
+        this.ownerEmail = timeline.getOwner().getEmail();
     }
 }

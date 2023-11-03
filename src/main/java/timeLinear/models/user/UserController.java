@@ -20,8 +20,8 @@ public class UserController {
     @PostMapping("changePassword")
     public ResponseEntity<?> changePassword(
             @RequestBody ChangePasswordRequest request) {
-        Principal user  = (Principal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        service.changePassword(request, user);
+        User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        service.changePassword(request, loggedUser);
         return ResponseEntity.ok().build();
     }
 

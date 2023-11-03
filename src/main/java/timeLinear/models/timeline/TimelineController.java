@@ -8,9 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import timeLinear.models.timeEvent.TimeEvent;
 import timeLinear.models.timeEvent.TimeEventRepository;
 import timeLinear.models.user.User;
+import timeLinear.models.userGroup.Group;
+import timeLinear.models.userGroup.GroupRepository;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/timelines")
@@ -23,7 +28,11 @@ public class TimelineController {
     @Autowired
     private TimeEventRepository timeEventRepository;
 
-    @Autowired TimelineService timelineService;
+    @Autowired
+    private TimelineService timelineService;
+
+    @Autowired
+    private GroupRepository groupRepository;
 
     @PostMapping
     public ResponseEntity<TimelineResponse> createTimeline(@RequestBody TimelineRequest timelineBean) {
@@ -79,6 +88,30 @@ public class TimelineController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping()
+    public ResponseEntity<TimelinesBulkResponse> getAvailableTimelines() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user != null) {
+            List<Group> myGroups = groupRepository.findAllByUsersContaining(user);
+
+            Set<Timeline> uniqueTimelines = new HashSet<>(); // Use a set to ensure uniqueness
+
+            if (!myGroups.isEmpty()) {
+                uniqueTimelines.addAll(timelineRepository.findAllByGroupIn(myGroups));
+            }
+
+            uniqueTimelines.addAll(timelineRepository.findAllByOwner(user)); // Add owned timelines
+
+            List<TimelineResponse> timelineResponses = uniqueTimelines.stream()
+                    .map(TimelineResponse::new)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok().body(new TimelinesBulkResponse(timelineResponses));
+        }
+        return ResponseEntity.ok().body(new TimelinesBulkResponse());
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTimeline(@PathVariable Long id) {
         try {
@@ -126,6 +159,25 @@ public class TimelineController {
             }
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to remove Event from Timeline!" + e.getMessage());
+        }
+    }
+
+    @PutMapping("/browseGroup")
+    public ResponseEntity<String> setBrowseGroupPermission(@RequestBody TimelinePermissionRequest data) {
+        try {
+            Optional<Timeline> timelineOptional = timelineRepository.findById(data.getTimelineId());
+            Optional<Group> groupOptional = groupRepository.findById(data.getGroupId());
+
+            if (timelineOptional.isPresent() && groupOptional.isPresent()) {
+                Timeline updatedTimeline = timelineOptional.get();
+                updatedTimeline.setAllowedToBrowse(groupOptional.get());
+                timelineRepository.save(updatedTimeline);
+                return ResponseEntity.ok().body("Timeline updated!");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to update Timeline: " + e.getMessage());
         }
     }
 }

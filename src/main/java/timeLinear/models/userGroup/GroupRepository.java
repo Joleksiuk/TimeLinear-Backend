@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
     List<Group> findAllByOwner(User user);
+    List<Group> findAllByUsersContaining(User user);
+
 }
