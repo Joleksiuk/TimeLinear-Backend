@@ -170,7 +170,7 @@ public class TimelineController {
 
             if (timelineOptional.isPresent() && groupOptional.isPresent()) {
                 Timeline updatedTimeline = timelineOptional.get();
-                updatedTimeline.setAllowedToBrowse(groupOptional.get());
+                updatedTimeline.setGroup(groupOptional.get());
                 timelineRepository.save(updatedTimeline);
                 return ResponseEntity.ok().body("Timeline updated!");
             } else {

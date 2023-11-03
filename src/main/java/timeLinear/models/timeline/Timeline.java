@@ -1,5 +1,6 @@
 package timeLinear.models.timeline;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,8 +10,6 @@ import timeLinear.models.user.User;
 import timeLinear.models.userGroup.Group;
 import timeLinear.utils.DateUtils;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,13 +46,15 @@ public class Timeline {
 
     @OneToOne
     @JoinColumn(name = "group_id")
-    private Group allowedToBrowse;
+    @Nullable
+    private Group group;
 
     public Timeline (TimelineRequest timelineBean) {
         this.name = timelineBean.getName();
         this.description = timelineBean.getDescription();
         this.creationDate = DateUtils.getCurrentStringDate();
         this.owner = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        this.group = null;
     }
 
     public void addEvent(TimeEvent timeEvent){

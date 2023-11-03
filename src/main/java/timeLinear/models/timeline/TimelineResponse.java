@@ -17,7 +17,7 @@ public class TimelineResponse {
     private String creationDate;
     private List<TimeEventResponse> timeEvents;
 
-    private Group allowedToBrowse;
+    private Group group;
 
     private String ownerEmail;
 
@@ -27,7 +27,7 @@ public class TimelineResponse {
         this.description = timeline.getDescription();
         this.creationDate = timeline.getCreationDate();
         this.timeEvents = timeline.getTimeEvents().stream().map(TimeEventResponse::new).toList();
-        this.allowedToBrowse = timeline.getAllowedToBrowse();
+        this.group = timeline.getGroup();
         this.ownerEmail = timeline.getOwner().getEmail();
     }
 }
