@@ -25,7 +25,10 @@ public class TimeLinearApplication {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:8080", "http://localhost:3000")
+                        .allowedOrigins(
+                                "https://timelinear.onrender.com",
+                                "http://localhost:3000",
+                                "http://localhost:8080")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
                         .allowCredentials(true);
