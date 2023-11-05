@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import timeLinear.models.category.CategoryResponse;
 
 @Setter
 @Getter
@@ -16,4 +17,5 @@ public class TimeEventRequest {
     private String endDate;
     private String iconType = null;
     private String iconSource = null;
+    private CategoryResponse category = null;
 }

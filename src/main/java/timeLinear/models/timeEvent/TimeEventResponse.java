@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import timeLinear.models.category.CategoryResponse;
 
 @Setter
 @Getter
@@ -17,6 +18,7 @@ public class TimeEventResponse {
     private String endDate;
     private String iconType = null;
     private String iconSource = null;
+    private CategoryResponse category = null;
 
     public TimeEventResponse (TimeEvent timeEvent){
         this.id = timeEvent.getId();
@@ -26,5 +28,8 @@ public class TimeEventResponse {
         this.endDate = timeEvent.getEndDate();
         this.iconSource = timeEvent.getIconSource();
         this.iconType = timeEvent.getIconType();
+        if(timeEvent.getCategory() != null) {
+            this.category = new CategoryResponse(timeEvent.getCategory());
+        }
     }
 }

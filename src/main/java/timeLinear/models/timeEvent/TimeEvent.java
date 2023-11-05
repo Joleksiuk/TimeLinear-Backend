@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import timeLinear.models.category.Category;
 import timeLinear.models.user.User;
 import timeLinear.models.userGroup.Group;
 
@@ -41,6 +42,11 @@ public class TimeEvent {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User owner;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    @Nullable
+    private Category category;
 
     @OneToOne
     @JoinColumn(name = "group_id")

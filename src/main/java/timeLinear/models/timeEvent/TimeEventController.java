@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import timeLinear.models.category.Category;
+import timeLinear.models.category.CategoryRepository;
 import timeLinear.models.user.User;
 
 import java.util.List;
@@ -18,6 +20,8 @@ public class TimeEventController {
     @Autowired
     private TimeEventRepository timeEventRepository;
 
+
+
     @Autowired
     private TimeEventService timeEventService;
 
@@ -25,7 +29,9 @@ public class TimeEventController {
     public ResponseEntity<TimeEventResponse> createTimeEvent(@RequestBody TimeEventRequest data) {
         try{
             TimeEvent timeEvent = timeEventRepository.save(new TimeEvent(data));
+            timeEventService.assignCategoryToTimeEvent(data.getCategory(), timeEvent);
             timeEventService.assignUserToTimeEvent(timeEvent);
+            timeEventRepository.save(timeEvent);
             return ResponseEntity.ok().body(new TimeEventResponse(timeEvent));
         }
         catch(Exception e) {
@@ -51,6 +57,7 @@ public class TimeEventController {
         if (timeEvent.isPresent()) {
             TimeEvent updatedTimeEvent = new TimeEvent(timeEventBean);
             updatedTimeEvent.setId(eventId);
+            timeEventService.assignCategoryToTimeEvent(timeEventBean.getCategory(), updatedTimeEvent);
             timeEventRepository.save(updatedTimeEvent);
             return ResponseEntity.ok().body("Time Event updated!");
         } else {
