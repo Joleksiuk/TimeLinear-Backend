@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://dpg-cl2kq58310os73dhvlbg-a.frankfurt-postgres.render.com:5432/timelinear_71ws
-    username: timelinear_admin
-    password: b1yogwpOhKclARwtvowN2TY9EMlkhDb4
+    url: jdbc:postgresql://dpg-cnqdkja1hbls739a8cn0-a.frankfurt-postgres.render.com:5432/timelinear_db
+    username: timelinear_db_user
+    password: W9zowBjyGVWaadGTcEIEQqg9UVSIZQxb
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
