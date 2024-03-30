@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import timeLinear.models.category.Category;
-import timeLinear.models.category.CategoryRepository;
+import timeLinear.models.timelineTimeEvent.TimelineTimeEvent;
+import timeLinear.models.timelineTimeEvent.TimelineTimeEventRepository;
 import timeLinear.models.user.User;
 
 import java.util.List;
@@ -20,10 +20,11 @@ public class TimeEventController {
     @Autowired
     private TimeEventRepository timeEventRepository;
 
-
-
     @Autowired
     private TimeEventService timeEventService;
+
+    @Autowired
+    private TimelineTimeEventRepository timelineTimeEventRepository;
 
     @PostMapping
     public ResponseEntity<TimeEventResponse> createTimeEvent(@RequestBody TimeEventRequest data) {
@@ -43,6 +44,10 @@ public class TimeEventController {
     public ResponseEntity<String> deleteTimeEvent(@PathVariable Long eventId) {
         try{
             Optional<TimeEvent> timeEvent = timeEventRepository.findById(eventId);
+            List<TimelineTimeEvent> timelineTimeEvents =
+                    timelineTimeEventRepository.findAllByTimeEvent(timeEvent.get());
+            timelineTimeEventRepository.deleteAll(timelineTimeEvents);
+
             timeEvent.ifPresent(event -> timeEventRepository.delete(event));
             return ResponseEntity.ok().body("Time Event deleted!");
         }

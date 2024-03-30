@@ -7,9 +7,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import timeLinear.models.timeEvent.TimeEvent;
 import timeLinear.models.timeEvent.TimeEventRepository;
+import timeLinear.models.timelineTimeEvent.TimelineTimeEvent;
+import timeLinear.models.timelineTimeEvent.TimelineTimeEventRepository;
 import timeLinear.models.user.User;
 import timeLinear.models.userGroup.Group;
 import timeLinear.models.userGroup.GroupRepository;
+import timeLinear.models.timelineTimeEvent.TimelineTimeEventBean;
 
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +36,9 @@ public class TimelineController {
 
     @Autowired
     private GroupRepository groupRepository;
+
+    @Autowired
+    private TimelineTimeEventRepository timelineTimeEventRepository;
 
     @PostMapping
     public ResponseEntity<TimelineResponse> createTimeline(@RequestBody TimelineRequest timelineBean) {
@@ -117,6 +123,10 @@ public class TimelineController {
         try {
             Optional<Timeline> timelineOptional = timelineRepository.findById(id);
             if (timelineOptional.isPresent()) {
+                List<TimelineTimeEvent> timelineTimeEvents =
+                        timelineTimeEventRepository.findAllByTimeline(timelineOptional.get());
+                timelineTimeEventRepository.deleteAll(timelineTimeEvents);
+
                 timelineRepository.delete(timelineOptional.get());
                 return ResponseEntity.ok().body("Timeline deleted!");
             } else {
@@ -166,11 +176,15 @@ public class TimelineController {
     public ResponseEntity<String> setBrowseGroupPermission(@RequestBody TimelinePermissionRequest data) {
         try {
             Optional<Timeline> timelineOptional = timelineRepository.findById(data.getTimelineId());
-            Optional<Group> groupOptional = groupRepository.findById(data.getGroupId());
+            Group group = null;
 
-            if (timelineOptional.isPresent() && groupOptional.isPresent()) {
+            if(data.getGroupId()!=null){
+                group = groupRepository.findById(data.getGroupId()).orElse(null);
+            }
+
+            if (timelineOptional.isPresent()) {
                 Timeline updatedTimeline = timelineOptional.get();
-                updatedTimeline.setGroup(groupOptional.get());
+                updatedTimeline.setGroup(group);
                 timelineRepository.save(updatedTimeline);
                 return ResponseEntity.ok().body("Timeline updated!");
             } else {

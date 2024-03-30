@@ -1,4 +1,4 @@
-package timeLinear.models.timeline;
+package timeLinear.models.timelineTimeEvent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
