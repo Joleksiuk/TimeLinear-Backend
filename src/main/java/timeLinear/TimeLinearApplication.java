@@ -27,6 +27,7 @@ public class TimeLinearApplication {
                 registry.addMapping("/**")
                         .allowedOrigins(
                                 "https://timelinear.onrender.com",
+                                "https://timelinear-local-storage.onrender.com",
                                 "http://localhost:3000",
                                 "http://localhost:8080")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
