@@ -56,8 +56,9 @@ public class TimelineController {
         try {
             Optional<Timeline> timelineOptional = timelineRepository.findById(id);
             if (timelineOptional.isPresent()) {
-                Timeline updatedTimeline = new Timeline(timelineBean);
-                updatedTimeline.setId(id);
+                Timeline updatedTimeline = timelineOptional.get();
+                updatedTimeline.setDescription(timelineBean.getDescription());
+                updatedTimeline.setName(timelineBean.getName());
                 timelineRepository.save(updatedTimeline);
                 return ResponseEntity.ok().body("Timeline updated!");
             } else {
